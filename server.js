@@ -6,6 +6,7 @@ const uri = require('./env/url-mongo');
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(bodyParser.json());
+app.use(express.static('build'))
 
 
 app.post('/cities', (req, res) => {

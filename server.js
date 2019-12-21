@@ -1,10 +1,16 @@
 const express = require('express');
 const app = express()
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const PORT = process.env.PORT || 8080;
 const MongoClient = require('mongodb').MongoClient;
 const uri = require('./env/url-mongo');
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+app.use(cors({
+    origin: ['http://localhost:3000'],
+    credentials: true // enable set cookie
+}));
 
 app.use(bodyParser.json());
 app.use(express.static('build'))
@@ -24,5 +30,17 @@ app.post('/cities', (req, res) => {
     });
 });
 
+app.post('/workers', (req, res) => {
+    return client.connect(async (err, db) => {
+        if (err) {
+            console.log('Unable to connect...')
+        } else {
+            const workers = await client.db('babysitter').collection('workers').find({ cityId: req.body.cityId.trim() })
+            .toArray();
+            console.log('workersss', workers);
+            return res.json(workers)
+        }
+    });
+})
 
 app.listen(PORT, () => console.log(`App is listing to port ${PORT}`));

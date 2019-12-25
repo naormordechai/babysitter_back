@@ -19,11 +19,11 @@ app.use(express.static('build'))
 app.post('/cities', (req, res) => {
     return client.connect(async (err, db) => {
         if (err) {
-            console.log('Unable to connect...');
+            console.log('Unable to connect...', err);
         }
         else {
             const cities = await client.db('babysitter').collection('cities').find({ "name": { $regex: req.body.name } })
-                .limit(10)
+                .limit(5)
                 .toArray();
             return res.json(cities)
         }

@@ -41,8 +41,12 @@ app.post('/workers', (req, res) => {
                 .skip(req.body.offset)
                 .limit(req.body.pageSize)
                 .toArray();
-            console.log('workersss', workers);
-            return res.json(workers)
+            const count = await client.db('babysitter').collection('workers').count({ cityId: req.body.cityId.trim() })
+            const result = {
+                workers,
+                count
+            };
+            return res.json(result);
         }
     });
 })

@@ -30,13 +30,17 @@ app.post('/cities', (req, res) => {
     });
 });
 
+
 app.post('/workers', (req, res) => {
     return client.connect(async (err, db) => {
         if (err) {
             console.log('Unable to connect...')
         } else {
+            console.log(req.body);
             const workers = await client.db('babysitter').collection('workers').find({ cityId: req.body.cityId.trim() })
-            .toArray();
+                .skip(req.body.offset)
+                .limit(req.body.pageSize)
+                .toArray();
             console.log('workersss', workers);
             return res.json(workers)
         }

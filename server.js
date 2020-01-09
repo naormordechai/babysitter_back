@@ -5,6 +5,7 @@ const cors = require('cors');
 const PORT = process.env.PORT || 8080;
 const MongoClient = require('mongodb').MongoClient;
 const uri = require('./env/url-mongo');
+const history = require('connect-history-api-fallback');
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(cors({
@@ -13,7 +14,8 @@ app.use(cors({
 }));
 
 app.use(bodyParser.json());
-app.use(express.static('build'))
+app.use(express.static('build'));
+app.use(history());
 
 
 app.post('/cities', (req, res) => {

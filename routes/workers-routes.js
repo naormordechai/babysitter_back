@@ -1,6 +1,8 @@
 const workersRoutes = (client, app) => {
     app.post('/workers', (req, res) => {
         return client.connect(async (err, db) => {
+            rc = req.headers.cookie;
+            console.log('rc', rc);
             if (err) {
                 console.log('Unable to connect...')
             } else {
@@ -8,7 +10,9 @@ const workersRoutes = (client, app) => {
                     .skip(req.body.offset)
                     .limit(req.body.pageSize)
                     .toArray();
-                const count = await client.db('babysitter').collection('workers').count({ cityId: req.body.cityId.trim() })
+                const count = await client.db('babysitter').collection('workers').countDocuments({ cityId: req.body.cityId.trim() });
+                console.log('count', count);
+                
                 const result = {
                     workers,
                     count

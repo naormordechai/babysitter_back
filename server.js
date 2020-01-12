@@ -10,7 +10,8 @@ const history = require('connect-history-api-fallback');
 const citiesRoutes = require('./routes/cities-routes');
 const workersRoutes = require('./routes/workers-routes');
 const loginRoutes = require('./routes/login-routes');
-var cookieParser = require('cookie-parser');
+const userRoutes = require('./routes/user-routes');
+const cookieParser = require('cookie-parser');
 
 app.use(cors({
     origin: ['http://localhost:3000'],
@@ -18,15 +19,14 @@ app.use(cors({
 }));
 
 app.use(bodyParser.json());
-app.use(express.static('build'));
 app.use(history());
 app.use(cookieParser());
+app.use(express.static('build'));
 
 citiesRoutes(client, app);
 workersRoutes(client, app);
-loginRoutes(client, app)
-
-
+loginRoutes(client, app);
+userRoutes(client, app, cookieParser);
 
 if (process.env.NODE_ENV === 'production') {
     // Exprees will serve up production assets

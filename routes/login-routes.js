@@ -1,5 +1,9 @@
 const loginRoutes = (client, app) => {
+
     app.post('/login', (req, res) => {
+        rc = req.headers.cookie;
+        console.log('rc', rc);
+
         return client.connect(async (err, db) => {
             if (err) {
                 console.log('Unable to connect...', err);
@@ -7,16 +11,21 @@ const loginRoutes = (client, app) => {
             else {
                 const user = await client.db('babysitter').collection('users').findOne({ email: req.body.email, password: req.body.password });
                 if (user) {
-                    var randomNumber = Math.random().toString();
-                    randomNumber = randomNumber.substring(2, randomNumber.length);
-                    res.setHeader('Set-Cookie', 'foo=bar;');
-                    res.cookie('cookieName', randomNumber, { maxAge: 900000, httpOnly: true });
-                    console.log('cookie created successfully');
+                    const activeUser = {
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        id: user._id
+                    }
+                    res.cookie('uid', activeUser.id, { httpOnly: true });
+                    res.json(activeUser);
+                } else {
+                    res.json(false)
                 }
-                console.log('user', user)
             }
         });
     });
+
+
 };
 
 module.exports = loginRoutes;

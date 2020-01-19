@@ -1,11 +1,14 @@
 const { ObjectId } = require('mongodb');
-const userRoutes = (client, app, cookieParser) => {
+const assert = require('assert');
+const userRoutes = (client, app) => {
     app.get('/user', (req, res) => {
         return client.connect(async (err, db) => {
             if (err) {
                 console.log('Unable to connect...')
             } else {
-                const uid = new ObjectId(req.cookies['uid']);
+                // res.cookie('uid', '12', { httpOnly: true, maxAge: Date.now() })
+                const uidCoockie = req.cookies['uid'];
+                const uid = new ObjectId(uidCoockie);
                 const user = await client.db('babysitter').collection('users').findOne({ _id: uid });
                 if (user) {
                     const activeUser = {

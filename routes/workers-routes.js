@@ -1,26 +1,52 @@
-const workersRoutes = (client, app) => {
-    app.post('/workers', (req, res) => {
-        return client.connect(async (err, db) => {
-            rc = req.headers.cookie;
-            console.log('rc', rc);
-            if (err) {
-                console.log('Unable to connect...')
-            } else {
-                const workers = await client.db('babysitter').collection('workers').find({ cityId: req.body.cityId.trim() })
-                    .skip(req.body.offset)
-                    .limit(req.body.pageSize)
-                    .toArray();
-                const count = await client.db('babysitter').collection('workers').countDocuments({ cityId: req.body.cityId.trim() });
-                console.log('count', count);
-                
-                const result = {
-                    workers,
-                    count
-                };
-                return res.json(result);
-            }
-        });
-    })
+const checkAuth = require('../middleware/check-auth');
+const { ObjectId } = require('mongodb');
+const workersService = require('../services/workers-service');
+
+const workersRoutes = (app) => {
+
+    app.post('/workers', async (req, res) => {
+        const criteria = req.body;
+        const resultPromise = await workersService.getWorkers(criteria);
+        const result = await Promise.all(resultPromise);
+        res.json({ workers: result[0], count: result[1] })
+    });
+
+    app.get('/workers/:id', async (req, res) => {
+        const id = req.params.id;
+        const worker = await workersService.getWorkerById(id);
+        res.json(worker);
+    });
+
+    // app.post('/workers/:id/update-rating', (req, res) => {
+    //     return client.connect(async (err, db) => {
+    //         if (err) {
+    //             console.log('Unable to connect...')
+    //         } else {
+    //             const uid = new ObjectId(req.cookies['uid']);
+    //             const user = await client.db('babysitter').collection('users').findOne({ _id: uid });
+    //             if (user) {
+    //                 const workerId = new ObjectId(req.params.id);
+    //                 const reqWorker = await client.db('babysitter').collection('workers').findOne({ _id: workerId });
+    //                 const scoreRatings = reqWorker.scoreRatings.concat(req.body.ratingScore);
+    //                 const totalScore = scoreRatings.reduce((acc, val) => acc + val);
+    //                 let avgScoreRating = (totalScore / scoreRatings.length).toFixed(1);
+    //                 avgScoreRating = +avgScoreRating;
+    //                 const updatedWorker = await client.db('babysitter').collection('workers').findOneAndUpdate(
+    //                     { _id: workerId },
+    //                     { $set: { scoreRatings, avgScoreRating } },
+    //                     { returnOriginal: false }
+    //                 );
+    //                 const updatedUser = await client.db('babysitter').collection('users').findOneAndUpdate(
+    //                     { _id: user._id },
+    //                     { set: }
+    //                 )
+    //             }
+    //             console.log('updatedWorker', updatedWorker);
+
+    //         }
+    //     });
+    // });
+
 };
 
 module.exports = workersRoutes;

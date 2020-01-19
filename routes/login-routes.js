@@ -1,9 +1,5 @@
-const loginRoutes = (client, app) => {
-
+const loginRoutes = (client, app, jwt) => {
     app.post('/login', (req, res) => {
-        rc = req.headers.cookie;
-        console.log('rc', rc);
-
         return client.connect(async (err, db) => {
             if (err) {
                 console.log('Unable to connect...', err);
@@ -15,8 +11,14 @@ const loginRoutes = (client, app) => {
                         firstName: user.firstName,
                         lastName: user.lastName,
                         id: user._id
-                    }
-                    res.cookie('uid', activeUser.id, { httpOnly: true });
+                    };
+                    // const token = jwt.sign({ email: req.body.email, uId: user._id },
+                    //     process.env.JWT_KEY,
+                    //     {
+                    //         expiresIn: "1h"
+                    //     })
+                    // res.cookie('token', token, { httpOnly: true });
+                    res.cookie('uid', user._id, { httpOnly: true })
                     res.json(activeUser);
                 } else {
                     res.json(false)

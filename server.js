@@ -1,5 +1,5 @@
 const express = require('express');
-const app = express()
+const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const PORT = process.env.PORT || 8080;
@@ -12,21 +12,28 @@ const workersRoutes = require('./routes/workers-routes');
 const loginRoutes = require('./routes/login-routes');
 const userRoutes = require('./routes/user-routes');
 const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
 
 app.use(cors({
     origin: ['http://localhost:3000'],
     credentials: true // enable set cookie
 }));
 
+
+
 app.use(bodyParser.json());
-app.use(history());
+
+
 app.use(cookieParser());
 app.use(express.static('build'));
 
+
+workersRoutes(app);
 citiesRoutes(client, app);
-workersRoutes(client, app);
-loginRoutes(client, app);
+loginRoutes(client, app, jwt);
 userRoutes(client, app, cookieParser);
+
+app.use(history());
 
 if (process.env.NODE_ENV === 'production') {
     // Exprees will serve up production assets

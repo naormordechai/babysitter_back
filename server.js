@@ -9,7 +9,6 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 const history = require('connect-history-api-fallback');
 const citiesRoutes = require('./routes/cities-routes');
 const workersRoutes = require('./routes/workers-routes');
-const loginRoutes = require('./routes/login-routes');
 const userRoutes = require('./routes/user-routes');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
@@ -29,9 +28,8 @@ app.use(express.static('build'));
 
 
 workersRoutes(app);
-citiesRoutes(client, app);
-loginRoutes(client, app, jwt);
-userRoutes(client, app, cookieParser);
+citiesRoutes(app);
+userRoutes(app);
 
 app.use(history());
 

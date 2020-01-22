@@ -1,27 +1,28 @@
-const { ObjectId } = require('mongodb');
-const assert = require('assert');
-const userRoutes = (client, app) => {
-    app.get('/user', (req, res) => {
-        return client.connect(async (err, db) => {
-            if (err) {
-                console.log('Unable to connect...')
-            } else {
-                // res.cookie('uid', '12', { httpOnly: true, maxAge: Date.now() })
-                const uidCoockie = req.cookies['uid'];
-                const uid = new ObjectId(uidCoockie);
-                const user = await client.db('babysitter').collection('users').findOne({ _id: uid });
-                if (user) {
-                    const activeUser = {
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        id: user._id
-                    };
-                    res.json(activeUser)
-                } else {
-                    res.json(null)
-                }
-            }
-        });
+const userService = require('../services/user-service');
+const userRoutes = (app) => {
+    app.post('/user', async (req, res) => {
+        const result = await userService.getCurrentUser(req.body.id);
+        res.json(result);
+    });
+
+    app.post('/login', async (req, res) => {
+        console.log(req.body);
+        const user = await userService.login(req.body);
+        if (user && user.id) {
+            res.cookie('uid', user.id, { path: '/' })
+        }
+        console.log(user);
+
+        res.json(user)
+    });
+
+    app.get('/logout', (req, res) => {
+        // res.cookie('uid', '', { httpOnly: true, maxAge: Date.now(0) })
+        res.clearCookie('uid', { path: '/' });
+        // res.cookie('uid', { maxAge: Date.now(0) });
+        res.send('cookie foo cleared');
+        // userService.logout(res.cookie);
+        // res.json(true)
     })
 };
 

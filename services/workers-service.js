@@ -23,7 +23,21 @@ const getWorkerById = (id) => {
         });
 };
 
+const updateWorkerRating = (id, ratingInfo) => {
+    id = ObjectId(id);
+    return mongoService.connect()
+        .then(db => {
+            return db.collection('workers').findOneAndUpdate({ _id: id },
+                { $set: { scoreRatings: ratingInfo.scoreRatings, avgScoreRating: ratingInfo.avgScoreRating } }, { returnOriginal: false })
+                .then(result => {
+                    console.log('RESULT', result);
+                    return result;
+                })
+        });
+};
+
 module.exports = {
     getWorkers,
-    getWorkerById
+    getWorkerById,
+    updateWorkerRating
 }

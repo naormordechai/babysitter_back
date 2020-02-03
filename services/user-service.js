@@ -35,8 +35,9 @@ const getCurrentUser = (id) => {
                             const activeUser = {
                                 firstName: user.firstName,
                                 lastName: user.lastName,
-                                id: user._id
-                            };
+                                id: user._id,
+                                activates: user.activates
+                            }
                             return activeUser;
                         } else {
                             return null;
@@ -47,6 +48,10 @@ const getCurrentUser = (id) => {
             }
         });
 };
+
+const updateUser = (id) => {
+    
+}
 
 module.exports = {
     login,

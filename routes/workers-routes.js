@@ -18,9 +18,8 @@ const workersRoutes = (app) => {
         res.json(worker);
     });
 
-    app.post('/workers/:workerId/:userId/update-rating', async (req, res) => {
+    app.post('/workers/:workerId/update-rating', async (req, res) => {
         const workerId = req.params.workerId;
-        const userId = req.params.userId;
         const { ratingInfo } = req.body;
         const updatedWorker = await workersService.updateWorkerRating(workerId, ratingInfo);
         res.json(updatedWorker)

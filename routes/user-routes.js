@@ -24,6 +24,13 @@ const userRoutes = (app) => {
         // userService.logout(res.cookie);
         // res.json(true)
     })
+
+    app.post('/user/update-activates', async (req, res) => {
+        console.log('GOTTTTS')
+        const { userId, workerId, infoActivates } = req.body;
+        const updatedUser = await userService.updateUser(userId, workerId, infoActivates);
+
+    });
 };
 
 module.exports = userRoutes;

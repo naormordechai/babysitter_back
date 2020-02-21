@@ -49,12 +49,21 @@ const getCurrentUser = (id) => {
         });
 };
 
-const updateUser = (id) => {
-    
+const updateUser = (userId, workerId, infoActivates) => {
+    const uid = new ObjectId(userId);
+    return mongoService.connect()
+        .then(db => {
+            return db.collection('users').findOneAndUpdate({ _id: uid },
+                { $push: { activates: { [workerId]: { ...infoActivates } } } }, { returnOriginal: false })
+        }).then(result => {
+            console.log('RESULT', result);
+        })
+
 }
 
 module.exports = {
     login,
     logout,
-    getCurrentUser
+    getCurrentUser,
+    updateUser
 }

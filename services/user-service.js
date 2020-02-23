@@ -10,7 +10,8 @@ const login = (userDetail) => {
                         const activeUser = {
                             firstName: user.firstName,
                             lastName: user.lastName,
-                            id: user._id
+                            id: user._id,
+                            activates: user.activates
                         };
                         // res.cookie('uid', user._id, { httpOnly: true })
                         return activeUser

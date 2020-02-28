@@ -25,12 +25,21 @@ const userRoutes = (app) => {
         // res.json(true)
     })
 
-    app.post('/user/update-activates', async (req, res) => {
+    app.post('/user/insert-activate', async (req, res) => {
         console.log('GOTTTTS')
         const { userId, workerId, infoActivates } = req.body;
-        const updatedUser = await userService.updateUser(userId, workerId, infoActivates);
+        const insertedUser = await userService.insertActivate(userId, workerId, infoActivates);
+        res.json(insertedUser);
 
     });
+
+    app.put('/user/update-activate', async (req, res) => {
+        console.log('GOT UPDATE FUNCTION');
+        const { userId, workerId, infoActivates } = req.body;
+        const updateActivate = await userService.updateActivate(userId, workerId, infoActivates);
+        res.json(updateActivate)
+    });
+
 };
 
 module.exports = userRoutes;

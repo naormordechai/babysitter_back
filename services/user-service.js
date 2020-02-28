@@ -11,7 +11,7 @@ const login = (userDetail) => {
                             firstName: user.firstName,
                             lastName: user.lastName,
                             id: user._id,
-                            activates: user.activates
+                            activates: user.activates || []
                         };
                         // res.cookie('uid', user._id, { httpOnly: true })
                         return activeUser
@@ -50,21 +50,39 @@ const getCurrentUser = (id) => {
         });
 };
 
-const updateUser = (userId, workerId, infoActivates) => {
+const insertActivate = (userId, workerId, infoActivates) => {
     const uid = new ObjectId(userId);
     return mongoService.connect()
         .then(db => {
             return db.collection('users').findOneAndUpdate({ _id: uid },
                 { $push: { activates: { [workerId]: { ...infoActivates } } } }, { returnOriginal: false })
         }).then(result => {
-            console.log('RESULT', result);
+            if (!result) {
+                return false;
+            };
+            return true;
         })
-
 }
+
+const updateActivate = (userId, workerId, infoActivates) => {
+    const uid = new ObjectId(userId);
+    return mongoService.connect()
+        .then(db => {
+            const keyInActivates = `activates.${workerId}`;
+            return db.collection('users').findOneAndUpdate(
+                { _id: uid, [keyInActivates]: workerId },
+                { $set: { 'activates.$.scoreRatings': 1 } }
+            )
+        }).then(result => {
+            console.log('RESULT', result)
+            return true;
+        })
+};
 
 module.exports = {
     login,
     logout,
     getCurrentUser,
-    updateUser
+    insertActivate,
+    updateActivate
 }

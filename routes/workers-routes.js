@@ -1,7 +1,6 @@
 const checkAuth = require('../middleware/check-auth');
-const { ObjectId } = require('mongodb');
 const workersService = require('../services/workers-service');
-const userService = require('../services/user-service');
+
 
 const workersRoutes = (app) => {
 
@@ -23,37 +22,29 @@ const workersRoutes = (app) => {
         const { ratingInfo } = req.body;
         const updatedWorker = await workersService.updateWorkerRating(workerId, ratingInfo);
         res.json(updatedWorker)
-        // const updatedUser = await userService.updateUser(userId);
-        // return client.connect(async (err, db) => {
-        //     if (err) {
-        //         console.log('Unable to connect...')
-        //     } else {
-        //         const uid = new ObjectId(req.cookies['uid']);
-        //         const user = await client.db('babysitter').collection('users').findOne({ _id: uid });
-        //         if (user) {
-        //             const workerId = new ObjectId(req.params.id);
-        //             const reqWorker = await client.db('babysitter').collection('workers').findOne({ _id: workerId });
-        //             const scoreRatings = reqWorker.scoreRatings.concat(req.body.ratingScore);
-        //             const totalScore = scoreRatings.reduce((acc, val) => acc + val);
-        //             let avgScoreRating = (totalScore / scoreRatings.length).toFixed(1);
-        //             avgScoreRating = +avgScoreRating;
-        //             const updatedWorker = await client.db('babysitter').collection('workers').findOneAndUpdate(
-        //                 { _id: workerId },
-        //                 { $set: { scoreRatings, avgScoreRating } },
-        //                 { returnOriginal: false }
-        //             );
-        //             const updatedUser = await client.db('babysitter').collection('users').findOneAndUpdate(
-        //                 { _id: user._id },
-        //                 { set: }
-        //             )
-        //         }
-        //         console.log('updatedWorker', updatedWorker);
+    });
 
-        //     }
-        // });
+
+    app.post('/workers/add-comment', async (req, res) => {
+        const { data } = req.body;
+        const value = await workersService.addComment(data);
+        res.json(value);
+    });
+
+    app.delete('/workers/delete-comment', async (req, res) => {
+        const { data } = req.body;
+        const value = await workersService.deleteComment(data);
+        res.json(value);
+    });
+
+    app.put('/workers/update-comment', async (req, res) => {
+        const { data } = req.body;
+        const value = await workersService.updateComment(data)
+        res.json(value)
     });
 
 };
+
 
 module.exports = workersRoutes;
 

@@ -41,11 +41,11 @@ const addComment = (data) => {
     id = ObjectId(data.workerId);
     return mongoService.connect()
         .then(db => {
+            const newComment = { ...data, commentId: uuidv1() };
             return db.collection('workers').findOneAndUpdate({ _id: id },
-                { $push: { comments: { ...data, commentId: uuidv1() } } })
+                { $push: { comments: newComment } })
                 .then(_ => {
-                    console.log('___', _);
-                    return true;
+                    return newComment;
                 })
                 .catch(err => {
                     return false;

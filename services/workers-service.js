@@ -73,7 +73,7 @@ const updateComment = (data) => {
     id = ObjectId(data.workerId);
     return mongoService.connect()
         .then(db => {
-            return db.collection('workers').findOneAndUpdate({ _id: id, "comments.commentId": "7d51ac20-72ab-11ea-a4cf-0995f6d25f50" },
+            return db.collection('workers').findOneAndUpdate({ _id: id, "comments.commentId": data.commentId },
                 { $set: { "comments.$": data } })
                 .then(result => {
                     return true;

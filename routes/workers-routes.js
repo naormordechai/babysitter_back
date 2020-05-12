@@ -32,7 +32,7 @@ const workersRoutes = (app) => {
     });
 
     app.delete('/workers/delete-comment', async (req, res) => {
-        const { data } = req.body;
+        const data = req.body;
         const value = await workersService.deleteComment(data);
         res.json(value);
     });

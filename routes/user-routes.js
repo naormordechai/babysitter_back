@@ -1,12 +1,13 @@
 const userService = require('../services/user-service');
 const userRoutes = (app) => {
+    
     app.post('/user', async (req, res) => {
         const result = await userService.getCurrentUser(req.body.id);
         res.json(result);
     });
 
     app.post('/login', async (req, res) => {
-        console.log(req.body);
+        console.log('login');
         const user = await userService.login(req.body);
         if (user && user.id) {
             res.cookie('uid', user.id, { path: '/' })

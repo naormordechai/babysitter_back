@@ -2,10 +2,14 @@ const mongoService = require('./mongo-service');
 const { ObjectId } = require('mongodb');
 
 const login = (userDetail) => {
+    console.log(12);
+    
     return mongoService.connect()
         .then(db => {
             return db.collection('users').findOne({ email: userDetail.email, password: userDetail.password })
                 .then(user => {
+                    console.log(user);
+                    
                     if (user && user._id) {
                         const activeUser = {
                             firstName: user.firstName,

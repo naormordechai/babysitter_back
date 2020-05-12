@@ -18,8 +18,6 @@ app.use(cors({
     credentials: true // enable set cookie
 }));
 
-
-
 app.use(bodyParser.json());
 
 
